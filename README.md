@@ -2,7 +2,7 @@
 This project was done as part of the Research Methodology &amp; Statistics 101 course. 
 
 ### Research Question 1: How does conforming to gender norms impact being encountered by different types of verbal harassment? 
-### Research Question 2: How does sex impact encountering different types of verbal harassment? 
+### Research Question 2: How does given sex impact encountering different types of verbal harassment? 
 
 To answer the research questions, a questionairre was created. 
 We created the questionairre by peer-reviewing related articles and receiving advise from social science lecturers.
