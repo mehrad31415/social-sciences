@@ -15,4 +15,4 @@ Multiple plots for visualization are created and analyzed. Likewise, Anova, Chi-
 
 Take note that this is only part of the project. The project contains many more variables and further analysis can be done. For the results please refer to the pdf. 
 
-<div>
+</div>
