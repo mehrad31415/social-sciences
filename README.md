@@ -13,6 +13,6 @@ Furthermore, we set a deadline and a minimum number of participants. The questio
 The link to the questionnaire can be found in the files. These files only contain the R code for wrangling, tidying, and reforming the data. The variables have been modified and explanations behind each decision is provided.
 Multiple plots for visualization are created and analyzed. Likewise, Anova, Chi-square, Kruskal-Wallis, Levene, and Shapiro-Wilk tests along with other methods have been used to answer the research questions.
 
-Take note that this is only part of the project. The project contains many more variables and further analysis can be done. For the results please refer to the pdf. 
+Take note that this is only part of the project. The project contains many more variables and further analysis can be done. For the results please refer to the pdf. The "updated_inferentialStatistics" pdf contains only the tests, the hypothesis and the results of the research. The "inferential_statistics" pdf along with the mentioned details also contains some descriptive statistics and charts and plots for further clarification. 
 
 </div>
