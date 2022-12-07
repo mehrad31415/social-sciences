@@ -10,6 +10,7 @@ output: html_document
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
+<div style="text-align: justify">
 
 This is the dataset obtained from the 205 participants we had to our defined questionnaire. The questionnaire is now closed but can be found on the following website: [This is an external link to the questionnaire](https://docs.google.com/forms/d/e/1FAIpQLScKAudjnWIxSKsO38xq6PunXuG0UUuR67I-eecjjU1hpN_Y5g/viewform?usp=sf_link)
 
@@ -426,46 +427,76 @@ ftable (chi2)
 summary (chi2)
 cramersV(chi2)
 ```
-As it can be seen, respectively, 7, 112, 21, 4, and 17 female at birth said "nothing", "catcalling", "insulting", "other", and "shouting" are the most type of harassment experienced. Whereas these numbers for male at birth are 8, 1, 15, 6, 12 in order. Furthermore, the chi square score is 63.69, the degree of freedom is 4 and the p-value is roughly 10^(-13). And the cramer's V is 0.55; therefore, there is a significant result between the variables. Specifically, the p-value is < .00001. The result is significant at p < .05. Therefore, we can reject the null hypothesis and conclude that **there is a relationship between the sex given at birth and the most type of harassment experienced**. 
+As it can be seen, respectively, 7, 112, 21, 4, and 17 females at birth said "nothing", "catcalling", "insulting", "other", and "shouting" are the most type of harassment experienced. Whereas these numbers for male at birth are 8, 1, 15, 6, 12 in order. Furthermore, the chi square score is 63.69, the degree of freedom is 4 and the p-value is 5.622e-13. And the Cramer’s V is 0.55; therefore, there is a significant result between the variables. Specifically, the result is significant at p < .05. Therefore, we can reject the null hypothesis and conclude that there is a relationship between the **sex given at birth and the most type of harassment experienced.**
 
 ```{r}
 prop.table(chi2)
 ```
-In the above table it can be seen that roughly **55%** of the **total population** are **female indicating catcalling their most type of harassment** whereas only 0.04% of the population are male indicating catcalling as their main type of harassment. Moreover as the below table shows, 69% of the female indicated catcalling as their main type of harassment and 35% of the male indicated insulting as their main type of harassment. 
+In a more specific statement, female at birth have experienced catcalling more than male at birth. Particularly, 55% of the total population are female indicating catcalling their most type of harassment whereas only 0.04% of the population are male indicating catcalling as their main type of harassment. Moreover, as the table shows, 69% of the female indicated catcalling as their main type of harassment and 35% of the male indicated insulting as their main type of harassment. The plot below is a nice summary of the correlation between most type of harassment experienced and sex at birth.
 
 ```{r}
 prop.table(chi2,1)
 ```
 
 The plot below is a nice summary of the correlation between most type of harassment experienced and sex at birth.
+
 ```{r}
 PlotXTabs(df, most_type, sex)
 ```
 
 ##### 4.3)
-We will now run an Anova test between the different categories in the "most type of harassment experienced" and the "rate" column. Specifically, we will test whether the means of the rate variable differ between the categories or not. 
-**null hypothesis** = There is no difference in the means of the rate (the rate to conforming to female traits on a scale of 1 to 5) between the categories of most type of harassment experienced.
-**alternative hypothesis** = There is a difference in at least the means of two categories. 
+In this section, a **one-way Anova** test will be used between the different categories in the "most type of harassment experienced" and the "rate" column. Specifically, whether the means of the rate variable differ between the categories will be tested.
+**null hypothesis** = There is no difference in the means of the rate (the rate conforming to female traits on a scale of 1 to 5) between the different categories of most type of harassment experienced.
+**alternative hypothesis** = There is a difference in the means of at least two categories. 
 
-The following boxplots will give us a decent overview before starting the test. Seeing the boxplots, we expect to reject the null hypothesis and say that there is a difference but we will run the test to ensure this prediction.
+The following boxplots will give a decent overview before starting the test. Seeing the boxplots, it is expected to reject the null hypothesis and say that there is a difference but a formal test will be run to ensure this prediction.
 
 
 ```{r}
 boxplot(rate ~ most_type, data = df)
 ```
+Before running the One-way Anova test, the sample should have some underlying assumptions:
+
+1-	**Variable type:** There is one qualitative variable (most_type) and one quantitative variable (rate); so, this requirement is fulfilled. 
+2-	**Independence:** In the design of the experiment, "snowball sampling" was used. This decreases the chances that the data is random. Therefore, the independency of the observations is not clear but for testing the data, it will be assumed that the sample is a decent reflection of the population. 
+3-	**Outliers:** Looking at the box plots, there are no significant outliers. 
+4-	**Equality of variances:** The equality of the variances of the categories must be checked. This can informally be seen from the above box plots. However, formally a *Levene test* will be used to ensure the homogeneity of the variances. The variances of the different groups should be equal if we want to run an Anova test. This is called homogeneity of the variances (homoscedasticity) as opposed to heteroscedasticity where the variances differ across groups. In the "Levene" test, the **Null Hypothesis** is: “All populations variances are equal.” The **Alternative Hypothesis** is “At least two of them differ.”
 
 ```{r}
-anova(lm (rate ~ most_type), data =df)
+library (car)
+leveneTest(df$rate ~ df$most_type)
+```
+Running the levene test, based on the results, it can be seen that the p-value (2.153e-05) is lower than the significance value (0.05). Thus, it can be concluded that the null hypothesis can be rejected and that the variances are not homogeneous. 
+
+5- **Normality:** The number of participants in each group is not higher than 30, in fact 15 people did not declare their most type of harassment. 10 said other and 29 said shouting. The only two categories with above 30 participants were catcalling with 113 participants declaring this as their most type of harassment and insulting with 36. Hence, it cannot be assumed that the data has normality, i.e., the residuals follow a normal distribution. Therefore, the normality will be tested using a **Shapiro-Wilk test.** In this test the null hypothesis is that the data has a normal distribution and the alternative hypothesis is that it does not have normality. 
+
+```{r}
+df %>% 
+  group_by(most_type) %>%
+  summarize(n = n())
 ```
 
-As derived from the anova test, the f-value is 11.41, the p-value is 10^(-8), therefore, we can reject our null hypothesis and conclude that **the rate variable (which represents a value between 1 - 5 and the higher the number the more the individual hold female traits) is correlated to which most-type of harassment the participant has declared**. It is interesting that this anova test has shown correlation. However, doing the chi-square test on the variables "most-type" and "conformity" showed no correlation even though conformity was derived from "rate" by defining a threshold. There main reason for this difference is:
 
-1- these two tests do not represent the same thing. In section 4.1 we did a chi-square test between two variables, namely, conformity which was given 1 if the individual **conformed to their own gender** and was given 0 otherwise & most type of harassment. In the anova test we have a test between two variables, the first of which is the most type of harassment but the second is **the scale of which the individual has female traits or conforms to female norms regardless of their own gender**.
-2- Also when setting a threshold, we have thrown away valuable data, so, our test has lower precision in the chi-square test.
+```{r}
+shapiro.test(df$rate)
+```
+As seen in the results the p-value (0.002511) is lower than the significance level (0.05) and thus the null hypothesis that the data has normality is rejected. In other words, the data does not have a normal distribution with regards to the rate. Therefore, the data is nor normal nor has a homogeneous variance, thus, a one-way Anova test **cannot** be used. Instead a **Kruskal-Wallis test** will be used which is a *nonparametric test*, so the normality assumption nor the homogeneity requirement is not required. However, the independence assumption must still hold. This method uses sample medians instead of sample means to compare groups.
+
+```{r}
+kruskal.test(rate ~ most_type,
+  data = df
+)
+```
+
+As derived from the test, Kruskal-Wallis chi-squared is 28.39, the p-value is 1.04e-05, therefore, the null hypothesis can be rejected and it can be concluded that **the rate variable (which represents a value between 1 - 5 and the higher the number the more the individual holds female traits) is correlated to which most-type of harassment the participant has declared**. It is interesting that this Kruskal-Wallis test has shown correlation. However, doing the chi-square test on the variables "most-type" and "conformity" showed no correlation even though conformity was derived from "rate" by defining a threshold. The main reasons for this difference is:
+
+1- These two tests in the first sight show a test between two similar variables, but that is not the case. In section 4.1 a chi-square test was used between two variables, namely, "conformity" - which was given 1 if the individual **conformed to their own gender** and was given 0 otherwise - & most type of "harassment". In the Kruskal-Wallis test the first variable is the most type of harassment but the second is **the scale of which the individual has female traits or conforms to female norms regardless of their own gender**.
+
+2- Also when setting a threshold, valuable data will be discarded, so, our test has lower precision in the chi-square test.
 
 
 ##### 4.4)
-As the final test, we will run an anova test between the "type" variable and "rate" variable. This is just as same as the "most-type" variable with the difference that here participants could have chosen multiple types of harassment they have experienced and not necessarily the most type of harassment they have experienced. Therefore, each participant might be calculated multiple times in the sum.
+As the final test, an anova test between the "type" variable and "rate" variable will be applied. This is just as same as the "most-type" variable with the difference that here participants could have chosen multiple types of harassment they have experienced and not necessarily the most type of harassment they have experienced. Therefore, each participant might be calculated multiple times in the sum.
 **null hypothesis** = the means of rate is the same for the all the categories of the types of harassment.
 **alternative hypothesis** = there is a difference in the means of rate between at least two different categories of the types of harassment.
 
@@ -514,14 +545,23 @@ df1$type [ df1$type != " Shouting & cursing" & df1$type != "Shouting & cursing" 
 boxplot(rate ~ type, data = df1)
 ```
 
+Again, there is one qualitative variable (type) and one quantitative variable (rate). Moreover, in the design of our experiment we used "snowball sampling" so therefore, this decreases our chance that the data was *random*. Therefore, the **independency** of our observations is not clear but for using Anova test we will assume that the sample is a decent reflection of our population. Looking at the box plots, there is **only one significant outlier** which can be neglected. Furthermore, we must check the variance of the groups. This can informally be seen from the above box plots. However, formally we will again run the **levene test** to ensure the homogeneity of the variances.
+
 ```{r}
-anova(lm (rate ~ type), data =df1)
+leveneTest(df1$rate ~ df1$type)
+```
+Running the levene test, based on the results, we conclude that the null hypothesis can be rejected and that the variances are not homogeneous because the p-value is lower than the significance level 0.05. We again use the **Kruskal-Wallis test**.
+
+```{r}
+kruskal.test(rate ~ type,
+  data = df
+)
+# anova(lm (rate ~ type), data =df1)
 ```
 
-Again based on the anova test the F-value is 3.6115 and the p-value is 1.85 * 10-(-6) which shows that there is a significant correlation between the "rate" variable and the "type" variable. In other words, there is at least two types which have a different means. 
+As derived from the test, Kruskal-Wallis chi-squared is 48.415, the p-value is 0.0003719, therefore, we can reject our null hypothesis and conclude that **the rate variable is correlated to the type of harassment the participant has declared**. In other words, there is at least two types which have a different means. 
 
-
-Last but not least, if you wish to further analyze the data, be careful of the values. The values were entered by the participants and not all have been tidied. Just to mentioned a few: To the question "What.gender.do.you.identify.as" the responses "Genderqueer" and "Gender queer" both can be seen where as they represent the same thing. The are also people who have not given their gender. Moreover, for the age of the participants, there is a response "18 years" which is the same as "18". These variables have not been used for the current analysis and thus, their values have not be tidied. 
+Last but not least, if you wish to further analyze the data, be careful of the values. The values were entered by the participants and not all have been tidied. Just to mentioned a few: To the question "What.gender.do.you.identify.as" the responses "Genderqueer" and "Gender queer" both can be seen where as they represent the same thing. There are also people who have not given their gender. Moreover, for the age of the participants, there is a response "18 years" which is the same as "18". These variables have not been used for the current analysis and thus, their values have not be tidied. 
 
 ```{r}
 # examples: 
@@ -531,3 +571,4 @@ Last but not least, if you wish to further analyze the data, be careful of the v
 #df$How.old.are.you.[df$How.old.are.you. == "18 years"] = 18
 ```
 
+</div>
